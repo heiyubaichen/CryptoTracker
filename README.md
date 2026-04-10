@@ -1,0 +1,2 @@
+1.使用该命令进行编译：
+cl /EHsc /utf-8 /I"D:\software\vcpkg\installed\x64-windows\include" /I"C:\Program Files\MySQL\MySQL Server 8.0\include" main.cpp Tracker.cpp DatabaseManager.cpp HttpFetcher.cpp JsonParser.cpp /link /LIBPATH:"D:\software\vcpkg\installed\x64-windows\lib" libcurl.lib /LIBPATH:"C:\Program Files\MySQL\MySQL Server 8.0\lib" libmysql.lib
