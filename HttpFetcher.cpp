@@ -19,9 +19,9 @@ std::string HttpFetcher::get(const std::string& url) {
         curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
 
         // 设置连接超时：10 秒内无法建立连接就放弃
-        curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT, 10L);
+        curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT, 10);
         // 设置总超时：15 秒内未完成整个请求就放弃
-        curl_easy_setopt(curl, CURLOPT_TIMEOUT, 15L);
+        curl_easy_setopt(curl, CURLOPT_TIMEOUT, 15);
 
         // 设置写数据回调函数，libcurl 收到数据时会调用 WriteCallback
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);

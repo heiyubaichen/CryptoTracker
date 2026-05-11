@@ -29,6 +29,7 @@ bool Tracker::updatePrice(const std::string& symbol) {
     std::string url = "https://api.coinlore.net/api/ticker/?id=" + coinIdMap[symbol];
 
     std::string response = httpFetcher.get(url);
+    //std::cout << "response: " << response << std::endl;
     if (response.empty()) {
         std::cerr << "获取数据失败！" << std::endl;
         return false;
