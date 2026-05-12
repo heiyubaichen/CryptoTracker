@@ -1,7 +1,9 @@
+#define NOMINMAX
 #include "Tracker.h"
 #include <iostream>
 #include <string>
 #include <windows.h>
+#include <limits>
 #include <fstream>
 #include <map>
 
@@ -41,35 +43,55 @@ int main() {
         std::cout << "3. 计算移动平均线(SMA)" << std::endl;
         std::cout << "4. 退出" << std::endl;
         std::cout << "请选择: ";
-        std::cin >> choice;
+        if (!(std::cin >> choice)) {
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            std::cout << "输入无效，请输入数字。" << std::endl;
+            continue;
+        }
 
         switch (choice) {
-        case 1:
+        case 1: {
             std::cout << "输入币种ID (例如: bitcoin, ethereum, dogecoin): ";
             std::cin >> symbol;
             tracker.updatePrice(symbol);
             break;
-        case 2:
+        }
+        case 2: {
             std::cout << "输入币种ID: ";
             std::cin >> symbol;
             std::cout << "查询天数 (例如: 7): ";
             int days;
-            std::cin >> days;
+            if (!(std::cin >> days)) {
+                std::cin.clear();
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                std::cout << "输入无效，请输入数字。" << std::endl;
+                break;
+            }
             tracker.showHistory(symbol, days);
             break;
-        case 3:
+        }
+        case 3: {
             std::cout << "输入币种ID: ";
             std::cin >> symbol;
             std::cout << "计算天数 (例如: 5): ";
             int period;
-            std::cin >> period;
+            if (!(std::cin >> period)) {
+                std::cin.clear();
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                std::cout << "输入无效，请输入数字。" << std::endl;
+                break;
+            }
             tracker.showSMA(symbol, period);
             break;
-        case 4:
+        }
+        case 4: {
             std::cout << "再见！" << std::endl;
             return 0;
-        default:
+        }
+        default: {
             std::cout << "无效选择，请重试。" << std::endl;
+        }
         }
     }
 }

@@ -46,7 +46,10 @@ bool Tracker::updatePrice(const std::string& symbol) {
 }
 
 void Tracker::showHistory(const std::string& symbol, int days) {
-    if (!isConnected) return;
+    if (!isConnected) {
+        std::cerr << "数据库未连接！" << std::endl;
+        return;
+    }
     auto records = dbManager.getRecentPrices(symbol, days);
     if (records.empty()) {
         std::cout << "未找到 " << symbol << " 的历史数据。" << std::endl;
@@ -68,22 +71,43 @@ double Tracker::calculateSMA(const std::vector<double>& prices) {
 }
 
 void Tracker::showSMA(const std::string& symbol, int period) {
-    if (!isConnected) return;
-    auto records = dbManager.getRecentPrices(symbol, period);
-    if (records.size() < static_cast<size_t>(period)) {
-        std::cout << "数据不足，无法计算" << period << "日均线。" << std::endl;
+    if (!isConnected) {
+        std::cerr << "数据库未连接！" << std::endl;
         return;
     }
-    std::vector<double> prices;
-    for (const auto& rec : records) {
-        prices.push_back(rec.price);
+    auto records = dbManager.getRecentPrices(symbol, period);
+    if (records.empty()) {
+        std::cout << "未找到 " << symbol << " 的历史数据。" << std::endl;
+        return;
     }
-    double sma = calculateSMA(prices);
+
+    // 按天分组，计算每日均价，避免采样不均导致 SMA 失真
+    std::map<std::string, std::vector<double>> dailyPrices;
+    for (const auto& rec : records) {
+        std::string date = rec.created_at.substr(0, 10); // "YYYY-MM-DD"
+        dailyPrices[date].push_back(rec.price);
+    }
+
+    std::vector<double> dailyAvgs;
+    for (const auto& entry : dailyPrices) {
+        const auto& prices = entry.second;
+        double sum = std::accumulate(prices.begin(), prices.end(), 0.0);
+        dailyAvgs.push_back(sum / prices.size());
+    }
+
+    int actualDays = dailyAvgs.size();
+    double sma = calculateSMA(dailyAvgs);
     double lastPrice = records.back().price;
 
     std::cout << std::fixed << std::setprecision(2);
-    std::cout << "最近" << period << "天均价: $" << sma << std::endl;
+    std::cout << period << "日均线 (基于日均价): $" << sma << std::endl;
+    std::cout << "覆盖交易日: " << actualDays << " 天";
+    if (actualDays < period) {
+        std::cout << " (数据不足" << period << "天，结果仅供参考)";
+    }
+    std::cout << std::endl;
     std::cout << "最新价格: $" << lastPrice << std::endl;
+
     if (lastPrice > sma) {
         std::cout << "当前价格高于均线，处于上升趋势。" << std::endl;
     }
