@@ -84,7 +84,7 @@ void Tracker::showSMA(const std::string& symbol, int period) {
     // 按天分组，计算每日均价，避免采样不均导致 SMA 失真
     std::map<std::string, std::vector<double>> dailyPrices;
     for (const auto& rec : records) {
-        std::string date = rec.created_at.substr(0, 10); // "YYYY-MM-DD"
+        std::string date = rec.created_at; // "YYYY-MM-DD"
         dailyPrices[date].push_back(rec.price);
     }
 
@@ -117,4 +117,5 @@ void Tracker::showSMA(const std::string& symbol, int period) {
     else {
         std::cout << "价格与均线持平。" << std::endl;
     }
+    return;
 }
