@@ -48,18 +48,18 @@ std::string HttpFetcher::get(const std::string& url) {
     curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 1L);
     curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 2L);
 
-    // 设置连接超时：2 秒内无法建立连接就放弃
-    curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT, 2L);
-    // 设置总超时：5 秒内未完成整个请求就放弃
-    curl_easy_setopt(curl, CURLOPT_TIMEOUT, 5L);
+    // 设置连接超时：4 秒内无法建立连接就放弃
+    curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT, 4L);
+    // 设置总超时：6 秒内未完成整个请求就放弃
+    curl_easy_setopt(curl, CURLOPT_TIMEOUT, 6L);
 
     // 设置写数据回调函数，libcurl 收到数据时会调用 WriteCallback
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
 
     CURLcode res = CURLE_OK;
 
-    for (int attempt = 0; attempt < maxRetries; ++attempt) {
-        std::string response;            // 每次重试清空响应
+    for (int attempt = 0; attempt <= maxRetries; ++attempt) {
+        std::string response;
         // 将 response 字符串的地址传给回调函数，让它能写入数据
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
 
