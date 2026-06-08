@@ -1,5 +1,5 @@
-#pragma once               // 防止头文件重复包含
-#include <string>          // 使用 std::string
+#pragma once
+#include <string>
 
 class HttpFetcher {
 public:

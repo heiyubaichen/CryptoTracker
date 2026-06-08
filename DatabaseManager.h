@@ -1,5 +1,5 @@
 #pragma once
-#include <mysql.h>          // MySQL C API 头文件
+#include <mysql.h>
 #include <string>
 #include <vector>
 
